@@ -1,0 +1,56 @@
+﻿<Window x:Class="FileOrganizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileOrganizer"
+        mc:Ignorable="d"
+        Title="File Organizer" Height="329.877" Width="612.5" Background="Black" WindowStyle="ThreeDBorderWindow" Loaded="Window_Loaded" Closed="Window_Closed"
+        >
+    <Window.Resources>
+        <RoutedUICommand x:Key="Move" Text="Move" />
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource Move}" 
+                    Executed="btnMove_Click" />
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="M" Modifiers="Alt" Command="{StaticResource Move}" />
+    </Window.InputBindings>
+    <Grid x:Name="grdMain">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="148*"/>
+            <RowDefinition Height="121*"/>
+            <RowDefinition Height="20*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="80*"/>
+        </Grid.ColumnDefinitions>
+        <TreeView x:Name="trVwFilesToOrganize" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" SelectedItemChanged="trVwFilesToOrganize_SelectedItemChanged" Background="Black" MouseDoubleClick="trVwFilesToOrganize_MouseDoubleClick" />
+        
+        <TreeView x:Name="trVwOrganizedFiles" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" SelectedItemChanged="trVwOrganizedFiles_SelectedItemChanged" Background="Black" ClipToBounds="True" Foreground="White"/>
+        <StackPanel x:Name="stkPnlFileDetails" Grid.Column="0" Grid.Row="1" >
+            <DockPanel x:Name="dckPnlIncludeDate" LastChildFill="True">
+                <Label x:Name="lblIncludeDate" Content="Dated?" Foreground="#FFFDFDFD" Margin="0" Padding="0" VerticalContentAlignment="Center"  />
+                <CheckBox x:Name="chkBxDated" IsChecked="True" Height="20" Padding="-7,0,0,0" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="3,0,0,0"  />
+            </DockPanel>
+            <DockPanel x:Name="dckPnlDate" LastChildFill="True">
+                <Label x:Name="lblDate" Content="Date:" Foreground="#FFFDFDFD" Margin="0" Padding="0" VerticalContentAlignment="Center" Width="37" />
+                <DatePicker x:Name="dtPkrDate" Height="26" Margin="5" Padding="0" VerticalContentAlignment="Center" />
+            </DockPanel>
+            <DockPanel x:Name="dckPnlFileName" LastChildFill="True">
+                <Label x:Name="lblFileName" Content="Name:" Foreground="#FFFDFDFD" Margin="0" Padding="0" VerticalContentAlignment="Center" Width="37" />
+                <TextBox x:Name="txtFileName" TextChanged="txtDestinationFileName_TextChanged" IsUndoEnabled="True" Height="26" Margin="5" Padding="0" VerticalContentAlignment="Center"  />
+            </DockPanel>
+            <DockPanel x:Name="dckPnlPageNumber" LastChildFill="True">
+                <Label x:Name="lblPageNumber" Content="Page:"  Foreground="#FFFDFDFD" Margin="0" Padding="0" VerticalContentAlignment="Center" Width="37" />
+                <TextBox x:Name="txtPageNumber" Height="26" Margin="5" Padding="0" VerticalContentAlignment="Center" />
+            </DockPanel>
+        </StackPanel>
+        <StackPanel x:Name="stkPnlActions" Grid.Row="2" Grid.ColumnSpan="3" FlowDirection="RightToLeft" >
+            <Button x:Name="btnMove" Content="Move" Click="btnMove_Click" HorizontalAlignment="Left" />
+        </StackPanel>
+    </Grid>
+</Window>
