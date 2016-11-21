@@ -181,12 +181,12 @@ namespace FileOrganizer
                     theDate = (DateTime)dtPkrDate.SelectedDate;
                 }
                 //Add a date to the new file name
-                newFileName = FileUtilities.ReplaceDateFileNamePattern(newFileName, theDate, txtFileName.Text);
+                newFileName = FileUtilities.ReplaceDateFileNamePattern(newFileName, theDate, txtPageNumber.Text);
             }
             else
             {
                 //No date add the default pattern to the file name
-                newFileName = FileUtilities.ReplaceNoDateFileNamePattern(newFileName, txtFileName.Text);
+                newFileName = FileUtilities.ReplaceNoDateFileNamePattern(newFileName, txtPageNumber.Text);
             }
             //Figure out which directory to move it into
             if(destinationFile.FileSystemItem.Type == FileSystemItem.FileSystemType.Directory)
