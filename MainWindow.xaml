@@ -28,8 +28,14 @@
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="80*"/>
         </Grid.ColumnDefinitions>
-        <TreeView x:Name="trVwFilesToOrganize" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" SelectedItemChanged="trVwFilesToOrganize_SelectedItemChanged" Background="Black" MouseDoubleClick="trVwFilesToOrganize_MouseDoubleClick" />
-        
+        <TreeView x:Name="trVwFilesToOrganize" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" SelectedItemChanged="trVwFilesToOrganize_SelectedItemChanged" Background="Black" MouseDoubleClick="trVwFilesToOrganize_MouseDoubleClick">
+            <TreeView.Resources>
+                <ContextMenu x:Key ="ctxMnuFilesToOrgainze"  StaysOpen="true">
+                    <MenuItem Header="Delete" Click="ctxMnuFilesToOrganize_Click"/>
+                </ContextMenu>
+            </TreeView.Resources>
+        </TreeView>
+
         <TreeView x:Name="trVwOrganizedFiles" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" SelectedItemChanged="trVwOrganizedFiles_SelectedItemChanged" Background="Black" ClipToBounds="True" Foreground="White"/>
         <StackPanel x:Name="stkPnlFileDetails" Grid.Column="0" Grid.Row="1" >
             <DockPanel x:Name="dckPnlIncludeDate" LastChildFill="True">

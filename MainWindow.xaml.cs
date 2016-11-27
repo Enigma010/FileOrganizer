@@ -97,6 +97,13 @@ namespace FileOrganizer
         {
             //Set the move buttons state appropriately
             btnMove.IsEnabled = IsMoveEnabled();
+            FileSystemTreeViewItem fileSystemTreeViewItem = trVwFilesToOrganize.SelectedItem as FileSystemTreeViewItem;
+            ContextMenu menu = null;
+            if(fileSystemTreeViewItem != null && fileSystemTreeViewItem.FileSystemItem.Type == FileSystemItem.FileSystemType.File)
+            {
+                menu = trVwFilesToOrganize.Resources["ctxMnuFilesToOrgainze"] as System.Windows.Controls.ContextMenu;
+            }
+            trVwFilesToOrganize.ContextMenu = menu;
         }
 
         private void trVwFilesToOrganize_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -299,6 +306,23 @@ namespace FileOrganizer
         private void txtDestinationFileName_TextChanged(object sender, TextChangedEventArgs e)
         {
             btnMove.IsEnabled = IsMoveEnabled();
+        }
+
+        private void ctxMnuFilesToOrganize_Click(object sender, RoutedEventArgs e)
+        {
+            bool test = false;
+            FileSystemTreeViewItem fileSystemTreeViewItem = trVwFilesToOrganize.SelectedItem as FileSystemTreeViewItem;
+            if(fileSystemTreeViewItem != null && fileSystemTreeViewItem.FileSystemItem.Type == FileSystemItem.FileSystemType.File)
+            {
+                try
+                {
+                    File.Delete(fileSystemTreeViewItem.FileSystemItem.Path);
+                }
+                catch(Exception exception)
+                {
+                    MessageBox.Show("Failed to delete file: " + fileSystemTreeViewItem.FileSystemItem.Path + ". " + exception.Message);
+                }
+            }
         }
 
         private FileSystemWatcher _filesToOrganizePathWatcher = null;
