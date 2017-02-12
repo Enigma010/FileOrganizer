@@ -1,24 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="FileOrganizer" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="FileOrganizer" GeneratedClassName="FileOrganizerSettings">
   <Profiles />
   <Settings>
     <Setting Name="FilesToOrganizeDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\jjoda\Pictures\Scans</Value>
+      <Value Profile="(Default)">%HOMEPATH%\Pictures\Scans</Value>
     </Setting>
     <Setting Name="OrganizedFilesDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Z:\Reference</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="OrganizedFileNamePrefix" Type="System.String" Scope="User">
       <Value Profile="(Default)">%Y_%M_%D - </Value>
     </Setting>
     <Setting Name="OrganizedFileNameSuffix" Type="System.String" Scope="User">
       <Value Profile="(Default)"> - pg %P</Value>
-    </Setting>
-    <Setting Name="MainWindowHeight" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="MainWindowWidth" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

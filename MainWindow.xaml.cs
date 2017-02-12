@@ -28,21 +28,24 @@ namespace FileOrganizer
         {
             InitializeComponent();
             //Populate the source directory tree, find all files in their original state
-            GetDirectories(trVwFilesToOrganize, Settings.Default.FilesToOrganizeDirectory, string.Empty, string.Empty, FileUtilities.GetEveryFile);
+            GetDirectories(trVwFilesToOrganize, Environment.ExpandEnvironmentVariables(FileOrganizerSettings.Default.FilesToOrganizeDirectory), string.Empty, string.Empty, FileUtilities.GetEveryFile);
             //Populate the destination directory tree, find the files matching the desitnation file pattern
-            GetDirectories(trVwOrganizedFiles, Settings.Default.OrganizedFilesDirectory, Settings.Default.OrganizedFileNamePrefix, Settings.Default.OrganizedFileNameSuffix, FileUtilities.GetPatternedFile);
+            GetDirectories(trVwOrganizedFiles, Environment.ExpandEnvironmentVariables(FileOrganizerSettings.Default.OrganizedFilesDirectory), FileOrganizerSettings.Default.OrganizedFileNamePrefix, FileOrganizerSettings.Default.OrganizedFileNameSuffix, FileUtilities.GetPatternedFile);
             //Set the move button to the right state
             btnMove.IsEnabled = IsMoveEnabled();
             //Configure a file watcher on the source directory to detect files moving in and out of the directory
-            ConfigureFileSystemWatcher(Settings.Default.FilesToOrganizeDirectory, _filesToOrganizePathWatcher, this.trVwFilesToOrganizeRenamed, this.trVwFilesToOrganizeUpdated);
+            ConfigureFileSystemWatcher(FileOrganizerSettings.Default.FilesToOrganizeDirectory, _filesToOrganizePathWatcher, this.trVwFilesToOrganizeRenamed, this.trVwFilesToOrganizeUpdated);
             //Configure a file watcher on the destination directory to detect files moving in and out of the directory
-            ConfigureFileSystemWatcher(Settings.Default.OrganizedFilesDirectory, _organizedFilesPathWatcher, this.trVwOrganizedFilesRenamed, this.trVwOrganizedFileUpdated);
+            ConfigureFileSystemWatcher(FileOrganizerSettings.Default.OrganizedFilesDirectory, _organizedFilesPathWatcher, this.trVwOrganizedFilesRenamed, this.trVwOrganizedFileUpdated);
             //Delete any temporary files from previous runs
-            FileUtilities.DeleteTempAppDataFiles("FileOrganizer");
+            _applicationData = new ApplicationData();
+            _applicationData.Name = "FileOrganizer";
+            _applicationData.DeleteTempAppDataFiles();
             //Sets the date picker state
             CheckBox_Checked(null, null);
         }
 
+        #region Private Methods
         /// <summary>
         /// Populates a tree view from a directory
         /// </summary>
@@ -53,6 +56,10 @@ namespace FileOrganizer
         /// <param name="fileProducer">The producer to get the list of files in a directory</param>
         private void GetDirectories(TreeView treeView, string directoryName, string fileNamePrefix, string fileNameSuffix, FileUtilities.GetFile fileProducer)
         {
+            if (!Directory.Exists(directoryName))
+            {
+                return;
+            }
             FileSystemTreeViewItem fileSystemTreeViewItem = new FileSystemTreeViewItem(directoryName, directoryName, fileNamePrefix, fileNameSuffix, fileProducer, this.SytlizeFileSystemTreeViewItem);
             treeView.Items.Add(fileSystemTreeViewItem);
             fileSystemTreeViewItem.Create();
@@ -63,22 +70,22 @@ namespace FileOrganizer
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //Restores the previous windows width and height
-            if (Settings.Default.MainWindowHeight != 0)
+            if (MainWindowSettings.Default.Height != 0)
             {
-                this.Height = Settings.Default.MainWindowHeight;
+                this.Height = MainWindowSettings.Default.Height;
             }
-            if(Settings.Default.MainWindowWidth != 0)
+            if(MainWindowSettings.Default.Width != 0)
             {
-                this.Width = Settings.Default.MainWindowWidth;
+                this.Width = MainWindowSettings.Default.Width;
             }
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
             //Saves the current windows width and height
-            Settings.Default.MainWindowHeight = this.Height;
-            Settings.Default.MainWindowWidth = this.Width;
-            Settings.Default.Save();
+            MainWindowSettings.Default.Height = this.Height;
+            MainWindowSettings.Default.Width = this.Width;
+            FileOrganizerSettings.Default.Save();
         }
 
         private void trVwOrganizedFiles_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -104,6 +111,26 @@ namespace FileOrganizer
                 menu = trVwFilesToOrganize.Resources["ctxMnuFilesToOrgainze"] as System.Windows.Controls.ContextMenu;
             }
             trVwFilesToOrganize.ContextMenu = menu;
+        }
+
+        private void trVwFilesToOrganize_KeyDown(object sender, KeyEventArgs e)
+        {
+            //Delete a file to sort via the keyboard
+            if(e.Key == Key.Delete && trVwFilesToOrganize.SelectedItem != null)
+            {
+                FileSystemTreeViewItem treeViewItem = trVwFilesToOrganize.SelectedItem as FileSystemTreeViewItem;
+                if(treeViewItem != null && treeViewItem.FileSystemItem.Type == FileSystemItem.FileSystemType.File)
+                {
+                    try
+                    {
+                        File.Delete(treeViewItem.FileSystemItem.Path);
+                    }
+                    catch(Exception exception)
+                    {
+                        MessageBox.Show("Error deleteing file " + treeViewItem.FileSystemItem.Path + ": " + exception.Message);
+                    }
+                }
+            }
         }
 
         private void trVwFilesToOrganize_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -172,7 +199,7 @@ namespace FileOrganizer
             string newFileName = txtFileName.Text + extension;
             
             //Add the prefix and suffix defaults value to the new file name
-            newFileName = FileUtilities.AddPrefixAndSuffixToFileName(newFileName, Settings.Default.OrganizedFileNamePrefix, Settings.Default.OrganizedFileNameSuffix);
+            newFileName = FileUtilities.AddPrefixAndSuffixToFileName(newFileName, FileOrganizerSettings.Default.OrganizedFileNamePrefix, FileOrganizerSettings.Default.OrganizedFileNameSuffix);
 
             //Figure out what to do with the date
             bool isChecked = false;
@@ -291,6 +318,10 @@ namespace FileOrganizer
 
         private void ConfigureFileSystemWatcher(string path, FileSystemWatcher fileSystemWatcher, RenamedEventHandler renamedHandler, FileSystemEventHandler fileSystemHandler)
         {
+            if (!Directory.Exists(path))
+            {
+                return;
+            }
             //Set the file system watcher
             fileSystemWatcher = new FileSystemWatcher();
             //The path to watch
@@ -310,7 +341,6 @@ namespace FileOrganizer
 
         private void ctxMnuFilesToOrganize_Click(object sender, RoutedEventArgs e)
         {
-            bool test = false;
             FileSystemTreeViewItem fileSystemTreeViewItem = trVwFilesToOrganize.SelectedItem as FileSystemTreeViewItem;
             if(fileSystemTreeViewItem != null && fileSystemTreeViewItem.FileSystemItem.Type == FileSystemItem.FileSystemType.File)
             {
@@ -325,7 +355,18 @@ namespace FileOrganizer
             }
         }
 
+        private void imgConfigure_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            FileOrganizerConfiguration configuration = new FileOrganizerConfiguration();
+            configuration.Settings = FileOrganizerSettings.Default;
+            configuration.ShowDialog();
+        }
+        #endregion
+
+        #region Private Objects
         private FileSystemWatcher _filesToOrganizePathWatcher = null;
         private FileSystemWatcher _organizedFilesPathWatcher = null;
+        private ApplicationData _applicationData = null;
+        #endregion
     }
 }

@@ -124,60 +124,6 @@ namespace FileOrganizer
         }
 
         /// <summary>
-        /// Gets the directory for a specific application
-        /// </summary>
-        /// <param name="applicationName">The name of the application</param>
-        /// <returns>The name of the directory to use</returns>
-        public static string AppDataDirectoryName(string applicationName)
-        {
-            string applicationDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), applicationName);
-            if (!Directory.Exists(applicationDataFolder))
-            {
-                Directory.CreateDirectory(applicationDataFolder);
-            }
-            return applicationDataFolder;
-        }
-
-        /// <summary>
-        /// Deletes all temporary files under an application directory
-        /// </summary>
-        /// <param name="applicationName">The name of the application</param>
-        public static void DeleteTempAppDataFiles(string applicationName)
-        {
-            string applicationDataFolder = AppDataDirectoryName(applicationName);
-            foreach(string fileName in Directory.GetFiles(applicationDataFolder))
-            {
-                try
-                {
-                    File.Delete(Path.Combine(applicationDataFolder, fileName));
-                }
-                catch
-                {
-
-                }
-            }
-        }
-
-        /// <summary>
-        /// Creates a directory under the application directory
-        /// </summary>
-        /// <param name="applicationName">The name of the application</param>
-        /// <param name="path">The path to the original file</param>
-        /// <param name="confirmDestinationDelete">Whether or not to ask the user prior to the file being deleted</param>
-        /// <param name="messageHandler">A delegate to invoke if a message needs to be displayed</param>
-        /// <param name="messageRespondHandler">A delegate to invoke if a message needs to be displayed and responded to</param>
-        /// <param name="destinationPath">The path to the destination file created</param>
-        /// <returns>Whether or not the destination file was created</returns>
-        public static bool CreateAppDataTemporaryFile(string applicationName, string path, bool confirmDestinationDelete, Message messageHandler, RespondToMessage messageRespondHandler, out string destinationPath)
-        {
-            destinationPath = string.Empty;
-            string appDataDirectoryName = AppDataDirectoryName(applicationName);
-            string fileName = Path.GetFileName(path);
-            destinationPath = Path.Combine(appDataDirectoryName, fileName);
-            return CopyFile(path, destinationPath, confirmDestinationDelete, messageHandler, messageRespondHandler);
-        }
-
-        /// <summary>
         /// Gets a list of files matching a specific pattern
         /// </summary>
         /// <param name="directoryName">The directory to look under</param>
@@ -433,9 +379,35 @@ namespace FileOrganizer
             }
             return true;
         }
+
+        /// <summary>
+        /// Creates a directory under the application directory
+        /// </summary>
+        /// <param name="directoryName">The name of the application</param>
+        /// <param name="path">The path to the original file</param>
+        /// <param name="confirmDestinationDelete">Whether or not to ask the user prior to the file being deleted</param>
+        /// <param name="messageHandler">A delegate to invoke if a message needs to be displayed</param>
+        /// <param name="messageRespondHandler">A delegate to invoke if a message needs to be displayed and responded to</param>
+        /// <param name="destinationPath">The path to the destination file created</param>
+        /// <returns>Whether or not the destination file was created</returns>
+        public static bool CreateAppDataTemporaryFile(string directoryName, string path, bool confirmDestinationDelete, Message messageHandler, RespondToMessage messageRespondHandler, out string destinationPath)
+        {
+            string fileName = Path.GetFileName(path);
+            destinationPath = Path.Combine(directoryName, fileName);
+            return CopyFile(path, destinationPath, confirmDestinationDelete, messageHandler, messageRespondHandler);
+        }
         #endregion
 
         #region Private Methods
+        /// <summary>
+        /// Replaces occurrences of the year, month, day, and page number in a string
+        /// </summary>
+        /// <param name="pattern">The pattern with the placeholders in it</param>
+        /// <param name="year">The year value</param>
+        /// <param name="month">The month value</param>
+        /// <param name="day">The day value</param>
+        /// <param name="pageNumber">The page number value</param>
+        /// <returns>The string with all the placeholders replaced with the proper values</returns>
         private static string ReplaceFileNamePattern(string pattern, string year, string month, string day, string pageNumber)
         {
             string replacedDateTimePattern = pattern;
@@ -446,6 +418,11 @@ namespace FileOrganizer
             return replacedDateTimePattern;
         }
 
+        /// <summary>
+        /// Returns whether or not the user's response was affirmative or not
+        /// </summary>
+        /// <param name="result">The response from the user to the message box</param>
+        /// <returns>Whether the user's response was affirmative or not</returns>
         private static bool MessageBoxResponseIsAffirmitive(MessageBoxResult result)
         {
             return result == MessageBoxResult.Yes || result == MessageBoxResult.OK;

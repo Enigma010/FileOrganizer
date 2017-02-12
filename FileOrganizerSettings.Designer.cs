@@ -13,11 +13,11 @@ namespace FileOrganizer {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    internal sealed partial class FileOrganizerSettings : global::System.Configuration.ApplicationSettingsBase {
         
-        private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
+        private static FileOrganizerSettings defaultInstance = ((FileOrganizerSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new FileOrganizerSettings())));
         
-        public static Settings Default {
+        public static FileOrganizerSettings Default {
             get {
                 return defaultInstance;
             }
@@ -25,7 +25,7 @@ namespace FileOrganizer {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\jjoda\\Pictures\\Scans")]
+        [global::System.Configuration.DefaultSettingValueAttribute("%HOMEPATH%\\Pictures\\Scans")]
         public string FilesToOrganizeDirectory {
             get {
                 return ((string)(this["FilesToOrganizeDirectory"]));
@@ -37,7 +37,7 @@ namespace FileOrganizer {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Z:\\Reference")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string OrganizedFilesDirectory {
             get {
                 return ((string)(this["OrganizedFilesDirectory"]));
@@ -68,30 +68,6 @@ namespace FileOrganizer {
             }
             set {
                 this["OrganizedFileNameSuffix"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double MainWindowHeight {
-            get {
-                return ((double)(this["MainWindowHeight"]));
-            }
-            set {
-                this["MainWindowHeight"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double MainWindowWidth {
-            get {
-                return ((double)(this["MainWindowWidth"]));
-            }
-            set {
-                this["MainWindowWidth"] = value;
             }
         }
     }

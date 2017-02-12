@@ -1,0 +1,20 @@
+﻿<Window x:Class="FileOrganizer.FileOrganizerConfiguration"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:FileOrganizer"
+        mc:Ignorable="d"
+        Title="FileOrganizerConfiguration" Height="300" Width="300" Background="Black">
+    <Grid x:Name="grdMain">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <xctk:PropertyGrid x:Name="prpGrdSettings">
+        </xctk:PropertyGrid>
+    </Grid>
+</Window>
