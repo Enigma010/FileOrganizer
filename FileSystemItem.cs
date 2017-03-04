@@ -59,11 +59,19 @@ namespace FileOrganizer
             set;
         }
 
+        public string ExpandedPath
+        {
+            get
+            {
+                return System.IO.Path.GetFullPath(Environment.ExpandEnvironmentVariables(Path));
+            }
+        }
+
         public string Directory
         {
             get
             {
-                return System.IO.Path.GetDirectoryName(Path);
+                return System.IO.Path.GetDirectoryName(ExpandedPath);
             }
         }
 
@@ -71,12 +79,22 @@ namespace FileOrganizer
         {
             get
             {
-                return System.IO.Path.GetFileName(Path);
+                return System.IO.Path.GetFileName(ExpandedPath);
             }
         }
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// Expands the path with the environment variables
+        /// </summary>
+        /// <param name="path">The path to expand</param>
+        /// <returns>The expanded path</returns>
+        public static string ExpandPath(string path)
+        {
+            return System.IO.Path.GetFullPath(Environment.ExpandEnvironmentVariables(path));
+        }
         /// <summary>
         /// Detects whether the value is a valid file system item
         /// </summary>

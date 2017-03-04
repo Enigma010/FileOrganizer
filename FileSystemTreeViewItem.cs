@@ -88,7 +88,7 @@ namespace FileOrganizer
             };
             Application.Current.Dispatcher.BeginInvoke(action);
             //Now create all the item's children
-            Create(FileSystemItem.Path);
+            Create(FileSystemItem.ExpandedPath);
         }
 
         /// <summary>
@@ -99,14 +99,19 @@ namespace FileOrganizer
         public void Add(string path, string displayPath)
         {
             FileSystemItem file = null;
-            if(FileProducer != null && !FileProducer(path, FileNamePrefix, FileNameSuffix, out file))
+            if (Directory.Exists(path))
+            {
+                file = new FileSystemItem(path);
+                file.Name = Path.GetFileName(path);
+            }
+            else if(FileProducer != null && !FileProducer(path, FileNamePrefix, FileNameSuffix, out file))
             {
                 return;
             }
             //Add a new item to this tree
             Action action = () =>
             {
-                FileSystemTreeViewItem addedTreeViewItem = new FileSystemTreeViewItem(file.Path, file.Name, FileNamePrefix, FileNameSuffix, FileProducer, ItemAddedHandler);
+                FileSystemTreeViewItem addedTreeViewItem = new FileSystemTreeViewItem(file.ExpandedPath, file.Name, FileNamePrefix, FileNameSuffix, FileProducer, ItemAddedHandler);
                 bool found = false;
                 foreach(object item  in Items)
                 {
@@ -115,7 +120,7 @@ namespace FileOrganizer
                     {
                         continue;
                     }
-                    if(checkFileSystemTreeViewItem.Name == addedTreeViewItem.Name)
+                    if(checkFileSystemTreeViewItem.FileSystemItem.ExpandedPath == addedTreeViewItem.FileSystemItem.ExpandedPath)
                     {
                         found = true;
                     }
@@ -164,7 +169,7 @@ namespace FileOrganizer
                 FileSystemTreeViewItem childFileSystemTreeViewItem = item as FileSystemTreeViewItem;
                 if (childFileSystemTreeViewItem != null)
                 {
-                    if (childFileSystemTreeViewItem.FileSystemItem.Path == path)
+                    if (childFileSystemTreeViewItem.FileSystemItem.ExpandedPath == FileSystemItem.ExpandPath(path))
                     {
                         foundTreeViewItem = childFileSystemTreeViewItem;
                         found = true;
@@ -197,22 +202,26 @@ namespace FileOrganizer
             }
             bool correctDepth = false;
 
-            string fileSystemDirectory = fileSystemTreeViewItem.FileSystemItem.Path;
+            string fileSystemDirectory = fileSystemTreeViewItem.FileSystemItem.ExpandedPath;
             string eventParentDirectoryName = System.IO.Path.GetDirectoryName(eventArguments.FullPath);
 
             correctDepth = (fileSystemDirectory == eventParentDirectoryName);
             //Figure out if the change happened where we are or if we should look through all our children and see if they need to do something
             if (!correctDepth)
             {
-                //We're not in the right spot, look through all our children and ask them to review the change
-                foreach (TreeViewItem childTreeViewItem in fileSystemTreeViewItem.Items)
+                Action action = () =>
                 {
-                    FileSystemTreeViewItem childFileSystemTreeViewItem = childTreeViewItem as FileSystemTreeViewItem;
-                    if (childFileSystemTreeViewItem != null)
+                    //We're not in the right spot, look through all our children and ask them to review the change
+                    foreach (TreeViewItem childTreeViewItem in fileSystemTreeViewItem.Items)
                     {
-                        FileWatcherEventHandler(childFileSystemTreeViewItem, eventArguments, itemAddedHandler);
+                        FileSystemTreeViewItem childFileSystemTreeViewItem = childTreeViewItem as FileSystemTreeViewItem;
+                        if (childFileSystemTreeViewItem != null)
+                        {
+                            FileWatcherEventHandler(childFileSystemTreeViewItem, eventArguments, itemAddedHandler);
+                        }
                     }
-                }
+                };
+                Application.Current.Dispatcher.BeginInvoke(action);
             }
             else
             {
@@ -267,14 +276,14 @@ namespace FileOrganizer
                 Application.Current.Dispatcher.BeginInvoke(action);
             }
             //Invoke the delegate to return the files appropriate to this tree
-            List<FileSystemItem> files = FileUtilities.GetFiles(FileSystemItem.Path, FileNamePrefix, FileNameSuffix, FileProducer);
+            List<FileSystemItem> files = FileUtilities.GetFiles(FileSystemItem.ExpandedPath, FileNamePrefix, FileNameSuffix, FileProducer);
             //Go through all the files
             foreach (FileSystemItem file in files)
             {
                 //Add files to the tree
                 Action action = () =>
                 {
-                    FileSystemTreeViewItem fileTreeItem = new FileSystemTreeViewItem(file.Path, file.Name, FileNamePrefix, FileNameSuffix, FileProducer, ItemAddedHandler);
+                    FileSystemTreeViewItem fileTreeItem = new FileSystemTreeViewItem(file.ExpandedPath, file.Name, FileNamePrefix, FileNameSuffix, FileProducer, ItemAddedHandler);
                     Add(fileTreeItem);
                     fileTreeItem.Create();
                 };

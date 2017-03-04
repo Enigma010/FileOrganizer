@@ -30,7 +30,7 @@
             <ColumnDefinition Width="80*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.ColumnSpan="3">
-            <Image x:Name="imgConfigure" Source="images/Gear.png" MouseDown="imgConfigure_MouseDown" />
+            <Image x:Name="imgConfigure" MouseDown="imgConfigure_MouseDown" Source="media\images\Gear.png" Height="20" VerticalAlignment="Top" />
         </StackPanel>
         <TreeView x:Name="trVwFilesToOrganize" KeyDown="trVwFilesToOrganize_KeyDown" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" SelectedItemChanged="trVwFilesToOrganize_SelectedItemChanged" Background="Black" MouseDoubleClick="trVwFilesToOrganize_MouseDoubleClick">
             <TreeView.Resources>

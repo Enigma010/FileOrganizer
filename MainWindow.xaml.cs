@@ -27,22 +27,7 @@ namespace FileOrganizer
         public MainWindow()
         {
             InitializeComponent();
-            //Populate the source directory tree, find all files in their original state
-            GetDirectories(trVwFilesToOrganize, Environment.ExpandEnvironmentVariables(FileOrganizerSettings.Default.FilesToOrganizeDirectory), string.Empty, string.Empty, FileUtilities.GetEveryFile);
-            //Populate the destination directory tree, find the files matching the desitnation file pattern
-            GetDirectories(trVwOrganizedFiles, Environment.ExpandEnvironmentVariables(FileOrganizerSettings.Default.OrganizedFilesDirectory), FileOrganizerSettings.Default.OrganizedFileNamePrefix, FileOrganizerSettings.Default.OrganizedFileNameSuffix, FileUtilities.GetPatternedFile);
-            //Set the move button to the right state
-            btnMove.IsEnabled = IsMoveEnabled();
-            //Configure a file watcher on the source directory to detect files moving in and out of the directory
-            ConfigureFileSystemWatcher(FileOrganizerSettings.Default.FilesToOrganizeDirectory, _filesToOrganizePathWatcher, this.trVwFilesToOrganizeRenamed, this.trVwFilesToOrganizeUpdated);
-            //Configure a file watcher on the destination directory to detect files moving in and out of the directory
-            ConfigureFileSystemWatcher(FileOrganizerSettings.Default.OrganizedFilesDirectory, _organizedFilesPathWatcher, this.trVwOrganizedFilesRenamed, this.trVwOrganizedFileUpdated);
-            //Delete any temporary files from previous runs
-            _applicationData = new ApplicationData();
-            _applicationData.Name = "FileOrganizer";
-            _applicationData.DeleteTempAppDataFiles();
-            //Sets the date picker state
-            CheckBox_Checked(null, null);
+            Initialize();
         }
 
         #region Private Methods
@@ -56,6 +41,7 @@ namespace FileOrganizer
         /// <param name="fileProducer">The producer to get the list of files in a directory</param>
         private void GetDirectories(TreeView treeView, string directoryName, string fileNamePrefix, string fileNameSuffix, FileUtilities.GetFile fileProducer)
         {
+            treeView.Items.Clear();
             if (!Directory.Exists(directoryName))
             {
                 return;
@@ -63,8 +49,6 @@ namespace FileOrganizer
             FileSystemTreeViewItem fileSystemTreeViewItem = new FileSystemTreeViewItem(directoryName, directoryName, fileNamePrefix, fileNameSuffix, fileProducer, this.SytlizeFileSystemTreeViewItem);
             treeView.Items.Add(fileSystemTreeViewItem);
             fileSystemTreeViewItem.Create();
-            //Thread thread = new Thread(fileSystemTreeViewItem.Create);
-            //thread.Start();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -123,11 +107,11 @@ namespace FileOrganizer
                 {
                     try
                     {
-                        File.Delete(treeViewItem.FileSystemItem.Path);
+                        File.Delete(treeViewItem.FileSystemItem.ExpandedPath);
                     }
                     catch(Exception exception)
                     {
-                        MessageBox.Show("Error deleteing file " + treeViewItem.FileSystemItem.Path + ": " + exception.Message);
+                        MessageBox.Show("Error deleteing file " + treeViewItem.FileSystemItem.ExpandedPath + ": " + exception.Message);
                     }
                 }
             }
@@ -142,7 +126,7 @@ namespace FileOrganizer
                 //Copy the file clicked to the application temporary directory. This allows the file to be previewed multiple times if the
                 //application that opens the file gets a lock on it
                 string destinationPath = string.Empty;
-                if(!FileUtilities.CreateAppDataTemporaryFile("FileOrganizer", sourceFile.FileSystemItem.Path, false, MessageHandler, RespondMessageHandler, out destinationPath))
+                if(!FileUtilities.CreateAppDataTemporaryFile(_applicationData.AppTempDirectoryName, sourceFile.FileSystemItem.ExpandedPath, false, MessageHandler, RespondMessageHandler, out destinationPath))
                 {
                     return;
                 }
@@ -193,7 +177,7 @@ namespace FileOrganizer
 
             string extension = string.Empty;
             string moveToDirectoryName = string.Empty;
-            extension = System.IO.Path.GetExtension(sourceFile.FileSystemItem.Path);
+            extension = System.IO.Path.GetExtension(sourceFile.FileSystemItem.ExpandedPath);
 
             //The destination is the destination name that the user put in
             string newFileName = txtFileName.Text + extension;
@@ -226,15 +210,15 @@ namespace FileOrganizer
             if(destinationFile.FileSystemItem.Type == FileSystemItem.FileSystemType.Directory)
             {
                 //It's a directory just use the value
-                moveToDirectoryName = destinationFile.FileSystemItem.Path;
+                moveToDirectoryName = destinationFile.FileSystemItem.ExpandedPath;
             }
             else
             {
                 //Find the directory of the file that the user has selected
-                moveToDirectoryName = System.IO.Path.GetDirectoryName(destinationFile.FileSystemItem.Path);
+                moveToDirectoryName = System.IO.Path.GetDirectoryName(destinationFile.FileSystemItem.ExpandedPath);
             }
             //Call the API to try to move the file
-            if (FileUtilities.MoveFile(sourceFile.FileSystemItem.Path,
+            if (FileUtilities.MoveFile(sourceFile.FileSystemItem.ExpandedPath,
                 System.IO.Path.Combine(moveToDirectoryName, newFileName),
                 this.MessageHandler,
                 this.RespondMessageHandler))
@@ -318,20 +302,27 @@ namespace FileOrganizer
 
         private void ConfigureFileSystemWatcher(string path, FileSystemWatcher fileSystemWatcher, RenamedEventHandler renamedHandler, FileSystemEventHandler fileSystemHandler)
         {
-            if (!Directory.Exists(path))
+            string expandedPath = FileSystemItem.ExpandPath(path);
+            if(fileSystemWatcher != null && fileSystemWatcher.Path == expandedPath)
+            {
+                return;
+            }
+            if (!Directory.Exists(expandedPath))
             {
                 return;
             }
             //Set the file system watcher
             fileSystemWatcher = new FileSystemWatcher();
             //The path to watch
-            fileSystemWatcher.Path = path;
+            fileSystemWatcher.Path = expandedPath;
             //All the event handlers
             fileSystemWatcher.Renamed += renamedHandler;
             fileSystemWatcher.Created += fileSystemHandler;
             fileSystemWatcher.Deleted += fileSystemHandler;
             //Only enable the watcher if the directory is a real directory
-            fileSystemWatcher.EnableRaisingEvents = Directory.Exists(fileSystemWatcher.Path);
+            bool enableWatcher = Directory.Exists(fileSystemWatcher.Path);
+            fileSystemWatcher.EnableRaisingEvents = enableWatcher;
+            fileSystemWatcher.IncludeSubdirectories = enableWatcher;
         }
 
         private void txtDestinationFileName_TextChanged(object sender, TextChangedEventArgs e)
@@ -346,11 +337,11 @@ namespace FileOrganizer
             {
                 try
                 {
-                    File.Delete(fileSystemTreeViewItem.FileSystemItem.Path);
+                    File.Delete(fileSystemTreeViewItem.FileSystemItem.ExpandedPath);
                 }
                 catch(Exception exception)
                 {
-                    MessageBox.Show("Failed to delete file: " + fileSystemTreeViewItem.FileSystemItem.Path + ". " + exception.Message);
+                    MessageBox.Show("Failed to delete file: " + fileSystemTreeViewItem.FileSystemItem.ExpandedPath + ". " + exception.Message);
                 }
             }
         }
@@ -360,6 +351,27 @@ namespace FileOrganizer
             FileOrganizerConfiguration configuration = new FileOrganizerConfiguration();
             configuration.Settings = FileOrganizerSettings.Default;
             configuration.ShowDialog();
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            //Populate the source directory tree, find all files in their original state
+            GetDirectories(trVwFilesToOrganize, Environment.ExpandEnvironmentVariables(FileOrganizerSettings.Default.FilesToOrganizeDirectory), string.Empty, string.Empty, FileUtilities.GetEveryFile);
+            //Populate the destination directory tree, find the files matching the desitnation file pattern
+            GetDirectories(trVwOrganizedFiles, Environment.ExpandEnvironmentVariables(FileOrganizerSettings.Default.OrganizedFilesDirectory), FileOrganizerSettings.Default.OrganizedFileNamePrefix, FileOrganizerSettings.Default.OrganizedFileNameSuffix, FileUtilities.GetPatternedFile);
+            //Set the move button to the right state
+            btnMove.IsEnabled = IsMoveEnabled();
+            //Configure a file watcher on the source directory to detect files moving in and out of the directory
+            ConfigureFileSystemWatcher(FileOrganizerSettings.Default.FilesToOrganizeDirectory, _filesToOrganizePathWatcher, this.trVwFilesToOrganizeRenamed, this.trVwFilesToOrganizeUpdated);
+            //Configure a file watcher on the destination directory to detect files moving in and out of the directory
+            ConfigureFileSystemWatcher(FileOrganizerSettings.Default.OrganizedFilesDirectory, _organizedFilesPathWatcher, this.trVwOrganizedFilesRenamed, this.trVwOrganizedFileUpdated);
+            //Delete any temporary files from previous runs
+            _applicationData = new ApplicationData();
+            _applicationData.Name = "FileOrganizer";
+            _applicationData.DeleteTempAppDataFiles();
+            //Sets the date picker state
+            CheckBox_Checked(null, null);
         }
         #endregion
 

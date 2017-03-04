@@ -65,6 +65,7 @@ namespace FileOrganizer
         }
 
         #region Public Methods
+
         /// <summary>
         /// Returns the general pattern for a specific file
         /// </summary>
