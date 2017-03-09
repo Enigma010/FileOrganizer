@@ -120,7 +120,7 @@ namespace FileOrganizer
                     {
                         continue;
                     }
-                    if(checkFileSystemTreeViewItem.FileSystemItem.ExpandedPath == addedTreeViewItem.FileSystemItem.ExpandedPath)
+                    if(checkFileSystemTreeViewItem.FileSystemItem.Name == addedTreeViewItem.FileSystemItem.Name)
                     {
                         found = true;
                     }
