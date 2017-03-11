@@ -92,7 +92,7 @@ namespace FileOrganizer
             ContextMenu menu = null;
             if(fileSystemTreeViewItem != null && fileSystemTreeViewItem.FileSystemItem.Type == FileSystemItem.FileSystemType.File)
             {
-                menu = trVwFilesToOrganize.Resources["ctxMnuFilesToOrgainze"] as System.Windows.Controls.ContextMenu;
+                menu = trVwFilesToOrganize.Resources["ctxMnuFilesToOrganize"] as System.Windows.Controls.ContextMenu;
             }
             trVwFilesToOrganize.ContextMenu = menu;
         }
