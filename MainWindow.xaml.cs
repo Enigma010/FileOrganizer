@@ -119,20 +119,7 @@ namespace FileOrganizer
 
         private void trVwFilesToOrganize_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            //Open a preview up on the item that the user double clicked
-            FileSystemTreeViewItem sourceFile = trVwFilesToOrganize.SelectedItem as FileSystemTreeViewItem;
-            if(sourceFile != null && sourceFile.FileSystemItem.Type == FileSystemItem.FileSystemType.File)
-            {
-                //Copy the file clicked to the application temporary directory. This allows the file to be previewed multiple times if the
-                //application that opens the file gets a lock on it
-                string destinationPath = string.Empty;
-                if(!FileUtilities.CreateAppDataTemporaryFile(_applicationData.AppTempDirectoryName, sourceFile.FileSystemItem.ExpandedPath, false, MessageHandler, RespondMessageHandler, out destinationPath))
-                {
-                    return;
-                }
-                //Start a process to handle displaying the file
-                Process.Start(destinationPath);
-            }
+            OpenFileToOrganize();
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -330,7 +317,7 @@ namespace FileOrganizer
             btnMove.IsEnabled = IsMoveEnabled();
         }
 
-        private void ctxMnuFilesToOrganize_Click(object sender, RoutedEventArgs e)
+        private void ctxMnuFilesToOrganize_Delete_Click(object sender, RoutedEventArgs e)
         {
             FileSystemTreeViewItem fileSystemTreeViewItem = trVwFilesToOrganize.SelectedItem as FileSystemTreeViewItem;
             if(fileSystemTreeViewItem != null && fileSystemTreeViewItem.FileSystemItem.Type == FileSystemItem.FileSystemType.File)
@@ -354,6 +341,12 @@ namespace FileOrganizer
             Initialize();
         }
 
+
+        private void ctxMnuFilesToOrganize_Open_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileToOrganize();
+        }
+
         private void Initialize()
         {
             //Populate the source directory tree, find all files in their original state
@@ -372,6 +365,24 @@ namespace FileOrganizer
             _applicationData.DeleteTempAppDataFiles();
             //Sets the date picker state
             CheckBox_Checked(null, null);
+        }
+
+        private void OpenFileToOrganize()
+        {
+            //Open a preview up on the item that the user double clicked
+            FileSystemTreeViewItem sourceFile = trVwFilesToOrganize.SelectedItem as FileSystemTreeViewItem;
+            if (sourceFile != null && sourceFile.FileSystemItem.Type == FileSystemItem.FileSystemType.File)
+            {
+                //Copy the file clicked to the application temporary directory. This allows the file to be previewed multiple times if the
+                //application that opens the file gets a lock on it
+                string destinationPath = string.Empty;
+                if (!FileUtilities.CreateAppDataTemporaryFile(_applicationData.AppTempDirectoryName, sourceFile.FileSystemItem.ExpandedPath, false, MessageHandler, RespondMessageHandler, out destinationPath))
+                {
+                    return;
+                }
+                //Start a process to handle displaying the file
+                Process.Start(destinationPath);
+            }
         }
         #endregion
 

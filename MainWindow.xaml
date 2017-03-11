@@ -35,7 +35,8 @@
         <TreeView x:Name="trVwFilesToOrganize" KeyDown="trVwFilesToOrganize_KeyDown" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" SelectedItemChanged="trVwFilesToOrganize_SelectedItemChanged" Background="Black" MouseDoubleClick="trVwFilesToOrganize_MouseDoubleClick">
             <TreeView.Resources>
                 <ContextMenu x:Key="ctxMnuFilesToOrganize" StaysOpen="true">
-                    <MenuItem Header="Delete" Click="ctxMnuFilesToOrganize_Click"/>
+                    <MenuItem Header="Delete" Click="ctxMnuFilesToOrganize_Delete_Click"/>
+                    <MenuItem Header="Open" Click="ctxMnuFilesToOrganize_Open_Click" />
                 </ContextMenu>                
             </TreeView.Resources>
         </TreeView>
