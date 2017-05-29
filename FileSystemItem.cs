@@ -82,6 +82,12 @@ namespace FileOrganizer
                 return System.IO.Path.GetFileName(ExpandedPath);
             }
         }
+
+        public DateTime? Instant
+        {
+            get;
+            set;
+        }
         #endregion
 
         #region Public Methods
@@ -93,6 +99,10 @@ namespace FileOrganizer
         /// <returns>The expanded path</returns>
         public static string ExpandPath(string path)
         {
+            if (string.IsNullOrEmpty(path))
+            {
+                return string.Empty;
+            }
             return System.IO.Path.GetFullPath(Environment.ExpandEnvironmentVariables(path));
         }
         /// <summary>

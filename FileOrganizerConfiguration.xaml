@@ -6,7 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:FileOrganizer"
         mc:Ignorable="d"
-        Title="FileOrganizerConfiguration" Height="300" Width="300" Background="Black">
+        Title="Configuration" Height="300" Width="300" Background="Black" Icon="media/images/Gear.png" SizeToContent="Width">
     <Grid x:Name="grdMain">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>

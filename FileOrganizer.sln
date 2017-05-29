@@ -1,20 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileOrganizer", "FileOrganizer.csproj", "{2D9F6AD1-8486-4B69-B0EB-BB1C5621718F}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Install", "Wix\Install\Install.wixproj", "{5564939F-56B2-4124-81CF-6564CF24955A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2D9F6AD1-8486-4B69-B0EB-BB1C5621718F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2D9F6AD1-8486-4B69-B0EB-BB1C5621718F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D9F6AD1-8486-4B69-B0EB-BB1C5621718F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2D9F6AD1-8486-4B69-B0EB-BB1C5621718F}.Debug|x86.Build.0 = Debug|Any CPU
 		{2D9F6AD1-8486-4B69-B0EB-BB1C5621718F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D9F6AD1-8486-4B69-B0EB-BB1C5621718F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D9F6AD1-8486-4B69-B0EB-BB1C5621718F}.Release|x86.ActiveCfg = Release|Any CPU
+		{2D9F6AD1-8486-4B69-B0EB-BB1C5621718F}.Release|x86.Build.0 = Release|Any CPU
+		{5564939F-56B2-4124-81CF-6564CF24955A}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{5564939F-56B2-4124-81CF-6564CF24955A}.Debug|x86.ActiveCfg = Debug|x86
+		{5564939F-56B2-4124-81CF-6564CF24955A}.Debug|x86.Build.0 = Debug|x86
+		{5564939F-56B2-4124-81CF-6564CF24955A}.Release|Any CPU.ActiveCfg = Release|x86
+		{5564939F-56B2-4124-81CF-6564CF24955A}.Release|x86.ActiveCfg = Release|x86
+		{5564939F-56B2-4124-81CF-6564CF24955A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

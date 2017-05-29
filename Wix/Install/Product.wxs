@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="File Orgainzer" Language="1033" Version="1.0.0.0" Manufacturer="Jeremy Jodarski" UpgradeCode="7ffe7013-c9c2-43e9-8991-1c67832f1d5d">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Media Id="1" Cabinet="FileOrganizer.cab" EmbedCab="yes" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <Icon Id="folder.ico" SourceFile="..\..\media\images\folder.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="folder.ico" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="APPLICATIONROOTDIRECTORY" Name="File Organizer" />
+      </Directory>
+      <!-- Step 1: Define the directory structure -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="File Organizer"/>
+      </Directory>
+    </Directory>
+
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+      <Component Id="FileOrganizer.exe" Guid="3F4E114F-6760-4DB9-B3AE-B39EF02727B9">
+        <File Id="FileOrganizer.exe" Source="..\..\bin\FileOrganizer.exe" KeyPath="yes" Checksum="yes"/>
+      </Component>
+      <Component Id="FileOrganizer.exe.config" Guid="C74446E6-CD88-40D0-898E-A3B006794742">
+        <File Id="FileOrganizer.exe.config" Source="..\..\bin\FileOrganizer.exe.config" KeyPath="yes"/>
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.dll" Guid="903296F4-DD1C-471E-BC41-091D3F2891BA">
+        <File Id="Xceed.Wpf.AvalonDock.dll" Source="..\..\bin\Xceed.Wpf.AvalonDock.dll" KeyPath="yes" Checksum="yes"/>
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Guid="8322DD34-2AA4-44F7-9110-0E5F5B87EAC2">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Source="..\..\bin\Xceed.Wpf.AvalonDock.Themes.Aero.dll" KeyPath="yes" Checksum="yes"/>
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Guid="FD435671-292F-45B2-AB85-A9FC8984221C">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Source="..\..\bin\Xceed.Wpf.AvalonDock.Themes.Metro.dll" KeyPath="yes" Checksum="yes"/>
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Guid="5199609C-0317-4CDC-B0B7-EC326BEF4F10">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Source="..\..\bin\Xceed.Wpf.AvalonDock.Themes.VS2010.dll" KeyPath="yes" Checksum="yes"/>
+      </Component>
+      <Component Id="Xceed.Wpf.DataGrid.dll" Guid="CE0A1C37-AB6A-4316-81A8-2C6FCD051547">
+        <File Id="Xceed.Wpf.DataGrid.dll" Source="..\..\bin\Xceed.Wpf.DataGrid.dll" KeyPath="yes" Checksum="yes"/>
+      </Component>
+      <Component Id="Xceed.Wpf.Toolkit.dll" Guid="F1B8D09D-BA1A-4590-99DC-1B845B1EADEE">
+        <File Id="Xceed.Wpf.Toolkit.dll" Source="..\..\bin\Xceed.Wpf.Toolkit.dll" KeyPath="yes" Checksum="yes"/>
+      </Component>
+      <Directory Id="de" Name="de">
+        <Component Id="de_Xceed.Wpf.AvalonDock.resources.dll" Guid="8E1602C7-029A-44F0-AD9A-6D5EF6A0B661">
+          <File Id="de_Xceed.Wpf.AvalonDock.resources.dll" Source="..\..\bin\de\Xceed.Wpf.AvalonDock.resources.dll" KeyPath="yes" Checksum="yes"/>
+        </Component>
+      </Directory>
+      <Directory Id="es" Name="es">
+        <Component Id="es_Xceed.Wpf.AvalonDock.resources.dll" Guid="8EAAF00F-AB94-46D4-9BCD-C00D00069296">
+          <File Id="es_Xceed.Wpf.AvalonDock.resources.dll" Source="..\..\bin\es\Xceed.Wpf.AvalonDock.resources.dll" KeyPath="yes" Checksum="yes"/>
+        </Component>
+      </Directory>
+      <Directory Id="fr" Name="fr">
+        <Component Id="fr_Xceed.Wpf.AvalonDock.resources.dll" Guid="027B0E00-192E-4218-BE5E-C21F180CA0C9">
+          <File Id="fr_Xceed.Wpf.AvalonDock.resources.dll" Source="..\..\bin\fr\Xceed.Wpf.AvalonDock.resources.dll" KeyPath="yes" Checksum="yes"/>
+        </Component>
+      </Directory>
+      <Directory Id="hu" Name="hu">
+        <Component Id="hu_Xceed.Wpf.AvalonDock.resources.dll" Guid="D503D144-A448-42BB-B040-79F5F453A3A0">
+          <File Id="hu_Xceed.Wpf.AvalonDock.resources.dll" Source="..\..\bin\hu\Xceed.Wpf.AvalonDock.resources.dll" KeyPath="yes" Checksum="yes"/>
+        </Component>
+      </Directory>
+      <Directory Id="it" Name="it">
+        <Component Id="it_Xceed.Wpf.AvalonDock.resources.dll" Guid="B6F81D88-E772-401D-83F1-34E3CD3F4BE7">
+          <File Id="it_Xceed.Wpf.AvalonDock.resources.dll" Source="..\..\bin\it\Xceed.Wpf.AvalonDock.resources.dll" KeyPath="yes" Checksum="yes"/>
+        </Component>
+      </Directory>
+      <Directory Id="pt_BR" Name="pt_BR">
+        <Component Id="pt_BR_Xceed.Wpf.AvalonDock.resources.dll" Guid="AF47552B-4FF1-4BB8-870A-CB334AB58801">
+          <File Id="pt_BR_Xceed.Wpf.AvalonDock.resources.dll" Source="..\..\bin\pt-BR\Xceed.Wpf.AvalonDock.resources.dll" KeyPath="yes" Checksum="yes"/>
+        </Component>
+      </Directory>
+      <Directory Id="ro" Name="ro">
+        <Component Id="ro_Xceed.Wpf.AvalonDock.resources.dll" Guid="CF5842C6-D6D7-4E9C-B379-B4328E8DFE68">
+          <File Id="ro_Xceed.Wpf.AvalonDock.resources.dll" Source="..\..\bin\ro\Xceed.Wpf.AvalonDock.resources.dll" KeyPath="yes" Checksum="yes"/>
+        </Component>
+      </Directory>
+      <Directory Id="ru" Name="ru">
+        <Component Id="ru_Xceed.Wpf.AvalonDock.resources.dll" Guid="C3BA7C62-79A7-4655-BE3E-563140E03525">
+          <File Id="ru_Xceed.Wpf.AvalonDock.resources.dll" Source="..\..\bin\ru\Xceed.Wpf.AvalonDock.resources.dll" KeyPath="yes" Checksum="yes"/>
+        </Component>
+      </Directory>
+      <Directory Id="sv" Name="sv">
+        <Component Id="sv_Xceed.Wpf.AvalonDock.resources.dll" Guid="8B4E0208-7B2B-407E-A1F2-B80605097A0D">
+          <File Id="sv_Xceed.Wpf.AvalonDock.resources.dll" Source="..\..\bin\sv\Xceed.Wpf.AvalonDock.resources.dll" KeyPath="yes" Checksum="yes"/>
+        </Component>
+      </Directory>
+      <Directory Id="zh_Hans" Name="zh_Hans">
+        <Component Id="zh_Hans_Xceed.Wpf.AvalonDock.resources.dll" Guid="A650D8FF-74D0-44D2-9D6F-B3AE7AEC69F6">
+          <File Id="zh_Hans_Xceed.Wpf.AvalonDock.resources.dll" Source="..\..\bin\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll" KeyPath="yes" Checksum="yes"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+
+    <!-- Step 2: Add the shortcut to your installer package -->
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="9BD0EC1A-9267-4E6F-9F25-21EBDA2E66C1">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="File Organizer" Description="My Application Description"
+                  Target="[#FileOrganizer.exe]"
+                  Icon="folder.ico"
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\MyApplicationName" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+    <Feature Id="MainApplication" Title="Main Application" Level="1">
+      <ComponentRef Id="FileOrganizer.exe" />
+      <ComponentRef Id="FileOrganizer.exe.config" />
+      <!-- Step 3: Tell WiX to install the shortcut -->
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="Xceed.Wpf.AvalonDock.dll" />
+      <ComponentRef Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
+      <ComponentRef Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
+      <ComponentRef Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
+      <ComponentRef Id="Xceed.Wpf.DataGrid.dll" />
+      <ComponentRef Id="Xceed.Wpf.Toolkit.dll" />
+      <ComponentRef Id="de_Xceed.Wpf.AvalonDock.resources.dll" />
+      <ComponentRef Id="es_Xceed.Wpf.AvalonDock.resources.dll" />
+      <ComponentRef Id="fr_Xceed.Wpf.AvalonDock.resources.dll" />
+      <ComponentRef Id="hu_Xceed.Wpf.AvalonDock.resources.dll" />
+      <ComponentRef Id="it_Xceed.Wpf.AvalonDock.resources.dll" />
+      <ComponentRef Id="pt_BR_Xceed.Wpf.AvalonDock.resources.dll" />
+      <ComponentRef Id="ro_Xceed.Wpf.AvalonDock.resources.dll" />
+      <ComponentRef Id="ru_Xceed.Wpf.AvalonDock.resources.dll" />
+      <ComponentRef Id="sv_Xceed.Wpf.AvalonDock.resources.dll" />
+      <ComponentRef Id="zh_Hans_Xceed.Wpf.AvalonDock.resources.dll" />
+    </Feature>
+  </Product>
+</Wix>

@@ -21,6 +21,11 @@ namespace FileOrganizer
         public const string Month = "M";
         public const string Day = "D";
         public const string Page = "P";
+
+        public const string FileNameRegexName = "fileName";
+        public const string YearRegexName = "year";
+        public const string MonthRegexName = "month";
+        public const string DayRegexName = "day";
         #endregion
 
         //Delegate to retrieve the appropriate files for a directory
@@ -111,7 +116,7 @@ namespace FileOrganizer
         /// <returns>A regular expression to use for matching</returns>
         public static Regex GetDatedFileNamePattern(string pattern)
        {
-            return new Regex(ReplaceFileNamePattern(pattern, "[0-9]{4}", "[0-9]{2}", "[0-9]{2}", "[0-9]{1,}"));
+            return new Regex(ReplaceFileNamePattern(pattern, "(?<" + YearRegexName + ">[0-9]{4})", "(?<" + MonthRegexName + ">[0-9]{2})", "(?<" + DayRegexName + ">[0-9]{2})", "[0-9]{1,}"));
         }
 
         /// <summary>
@@ -162,28 +167,24 @@ namespace FileOrganizer
             fileSystemItem = null;
             string fileName = Path.GetFileName(path);
             string extension = "[.](.*?)";
-            Regex datedFileNamePattern = FileUtilities.GetDatedFileNamePattern(Regex.Escape(fileNamePrefix) + "(.*?)" + Regex.Escape(fileNameSuffix) + extension);
-            Regex noDateFileNamePattern = FileUtilities.GetNoDateFileNamePattern(Regex.Escape(fileNamePrefix) + "(.*?)" + Regex.Escape(fileNameSuffix) + extension);
-            Regex matchedPattern = null;
+            Regex datedFileNamePattern = FileUtilities.GetDatedFileNamePattern(Regex.Escape(fileNamePrefix) + "(?<" + FileNameRegexName + ">.*?)" + Regex.Escape(fileNameSuffix) + extension);
+            Regex noDateFileNamePattern = FileUtilities.GetNoDateFileNamePattern(Regex.Escape(fileNamePrefix) + "(?<" + FileNameRegexName + ">.*?)" + Regex.Escape(fileNameSuffix) + extension);
             if (datedFileNamePattern.IsMatch(fileName))
             {
-                matchedPattern = datedFileNamePattern;
+                Match fileNameMatch = datedFileNamePattern.Match(fileName);
+                fileSystemItem = new FileSystemItem(path);
+                fileSystemItem.Name = fileNameMatch.Groups[FileNameRegexName].Value;
+                fileSystemItem.Instant = new DateTime(Int32.Parse(fileNameMatch.Groups[YearRegexName].Value), Int32.Parse(fileNameMatch.Groups[MonthRegexName].Value), Int32.Parse(fileNameMatch.Groups[DayRegexName].Value));
+                return true;
             }
             if (noDateFileNamePattern.IsMatch(fileName))
             {
-                matchedPattern = noDateFileNamePattern;
-            }
-            if (matchedPattern == null)
-            {
-                return false;
-            }
-            else
-            {
-                Match fileNameMatch = matchedPattern.Match(fileName);
+                Match fileNameMatch = noDateFileNamePattern.Match(fileName);
                 fileSystemItem = new FileSystemItem(path);
-                fileSystemItem.Name = fileNameMatch.Groups[1].Value;
+                fileSystemItem.Name = fileNameMatch.Groups[FileNameRegexName].Value;
                 return true;
             }
+            return false;
         }
 
         /// <summary>
