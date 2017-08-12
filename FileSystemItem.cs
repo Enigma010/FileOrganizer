@@ -29,7 +29,7 @@ namespace FileOrganizer
             }
             else
             {
-                throw new ArgumentException(path + " does not exist.");
+                Type = FileSystemType.Unknown;
             }
         }
         #endregion
@@ -38,7 +38,8 @@ namespace FileOrganizer
         public enum FileSystemType
         {
             File,
-            Directory
+            Directory,
+            Unknown
         }
 
         public FileSystemType Type

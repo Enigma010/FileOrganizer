@@ -173,6 +173,10 @@ namespace FileOrganizer
             {
                 Match fileNameMatch = datedFileNamePattern.Match(fileName);
                 fileSystemItem = new FileSystemItem(path);
+                if(fileSystemItem.Type == FileSystemItem.FileSystemType.Unknown)
+                {
+                    return false;
+                }
                 fileSystemItem.Name = fileNameMatch.Groups[FileNameRegexName].Value;
                 fileSystemItem.Instant = new DateTime(Int32.Parse(fileNameMatch.Groups[YearRegexName].Value), Int32.Parse(fileNameMatch.Groups[MonthRegexName].Value), Int32.Parse(fileNameMatch.Groups[DayRegexName].Value));
                 return true;
@@ -181,6 +185,10 @@ namespace FileOrganizer
             {
                 Match fileNameMatch = noDateFileNamePattern.Match(fileName);
                 fileSystemItem = new FileSystemItem(path);
+                if (fileSystemItem.Type == FileSystemItem.FileSystemType.Unknown)
+                {
+                    return false;
+                }
                 fileSystemItem.Name = fileNameMatch.Groups[FileNameRegexName].Value;
                 return true;
             }
@@ -266,6 +274,10 @@ namespace FileOrganizer
                 return false;
             }
             fileSystemItem = new FileSystemItem(path);
+            if (fileSystemItem.Type == FileSystemItem.FileSystemType.Unknown)
+            {
+                return false;
+            }
             fileSystemItem.Name = Path.GetFileName(path);
             fileSystemItem.Path = path;
             fileSystemItem.Type = FileSystemItem.FileSystemType.File;

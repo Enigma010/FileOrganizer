@@ -47,8 +47,11 @@ namespace FileOrganizer
                 return;
             }
             FileSystemTreeViewItem fileSystemTreeViewItem = new FileSystemTreeViewItem(directoryName, directoryName, fileNamePrefix, fileNameSuffix, fileProducer, this.SytlizeFileSystemTreeViewItem);
-            treeView.Items.Add(fileSystemTreeViewItem);
-            fileSystemTreeViewItem.Create();
+            if (fileSystemTreeViewItem.FileSystemItem.Type != FileSystemItem.FileSystemType.Unknown)
+            {
+                treeView.Items.Add(fileSystemTreeViewItem);
+                fileSystemTreeViewItem.Create();
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

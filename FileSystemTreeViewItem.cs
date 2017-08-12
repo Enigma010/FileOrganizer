@@ -112,27 +112,30 @@ namespace FileOrganizer
             Action action = () =>
             {
                 FileSystemTreeViewItem addedTreeViewItem = new FileSystemTreeViewItem(file.ExpandedPath, file.Name, FileNamePrefix, FileNameSuffix, FileProducer, ItemAddedHandler);
-                bool found = false;
-                foreach(object item  in Items)
+                if (addedTreeViewItem.FileSystemItem.Type != FileSystemItem.FileSystemType.Unknown)
                 {
-                    FileSystemTreeViewItem checkFileSystemTreeViewItem = item as FileSystemTreeViewItem;
-                    if(checkFileSystemTreeViewItem == null)
+                    bool found = false;
+                    foreach (object item in Items)
                     {
-                        continue;
+                        FileSystemTreeViewItem checkFileSystemTreeViewItem = item as FileSystemTreeViewItem;
+                        if (checkFileSystemTreeViewItem == null)
+                        {
+                            continue;
+                        }
+                        if (checkFileSystemTreeViewItem.FileSystemItem.Name == addedTreeViewItem.FileSystemItem.Name)
+                        {
+                            found = true;
+                        }
                     }
-                    if(checkFileSystemTreeViewItem.FileSystemItem.Name == addedTreeViewItem.FileSystemItem.Name)
+                    if (!found)
                     {
-                        found = true;
+                        Items.Add(addedTreeViewItem);
+                        if (ItemAddedHandler != null)
+                        {
+                            ItemAddedHandler(addedTreeViewItem);
+                        }
                     }
-                }
-                if (!found)
-                {
-                    Items.Add(addedTreeViewItem);
-                    if (ItemAddedHandler != null)
-                    {
-                        ItemAddedHandler(addedTreeViewItem);
-                    }
-                }
+                };
             };
             Application.Current.Dispatcher.BeginInvoke(action);
         }
@@ -268,10 +271,13 @@ namespace FileOrganizer
                 Action action = () =>
                 {
                     FileSystemTreeViewItem subDirectoryTreeItem = new FileSystemTreeViewItem(subDirectory, System.IO.Path.GetFileName(subDirectory), FileNamePrefix, FileNameSuffix, FileProducer, ItemAddedHandler);
-                    //Add a node to the current tree
-                    Add(subDirectoryTreeItem);
-                    //Call create to add all children under this node recursively
-                    subDirectoryTreeItem.Create();
+                    if (subDirectoryTreeItem.FileSystemItem.Type != FileSystemItem.FileSystemType.Unknown)
+                    {
+                        //Add a node to the current tree
+                        Add(subDirectoryTreeItem);
+                        //Call create to add all children under this node recursively
+                        subDirectoryTreeItem.Create();
+                    }
                 };
                 Application.Current.Dispatcher.BeginInvoke(action);
             }
@@ -284,8 +290,11 @@ namespace FileOrganizer
                 Action action = () =>
                 {
                     FileSystemTreeViewItem fileTreeItem = new FileSystemTreeViewItem(file.ExpandedPath, file.Name, FileNamePrefix, FileNameSuffix, FileProducer, ItemAddedHandler);
-                    Add(fileTreeItem);
-                    fileTreeItem.Create();
+                    if (fileTreeItem.FileSystemItem.Type != FileSystemItem.FileSystemType.Unknown)
+                    {
+                        Add(fileTreeItem);
+                        fileTreeItem.Create();
+                    }
                 };
                 Application.Current.Dispatcher.BeginInvoke(action);
             }
